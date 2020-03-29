@@ -34,14 +34,16 @@ const Statistics = ({ good, neutral, bad }) => {
     )
   }
   return (
-    <div>
-      <Statistic text="good" value={good}/>
-      <Statistic text="neutral" value={neutral}/>
-      <Statistic text="bad" value={bad}/>
-      <Statistic text="all" value={good + neutral + bad}/>
-      <Statistic text="average" value={average}/>
-      <Statistic text="percentage" value={good / (good + neutral + bad) * 100}/>
-    </div>
+    <table>
+      <tbody>
+        <Statistic text="good" value={good}/>
+        <Statistic text="neutral" value={neutral}/>
+        <Statistic text="bad" value={bad}/>
+        <Statistic text="all" value={good + neutral + bad}/>
+        <Statistic text="average" value={average}/>
+        <Statistic text="percentage" value={good / (good + neutral + bad) * 100}/>
+      </tbody>
+    </table>
   )
 }
 
@@ -52,14 +54,14 @@ const App = () => {
   const [bad, setBad] = useState(0)
 
   return (
-    <div>
+    <>
       <Title text="give feedback"/>
       <Button handleClick={setGood} count={good} text="good"/>
       <Button handleClick={setNeutral} count={neutral} text="neutral"/>
       <Button handleClick={setBad} count={bad} text="bad"/>
       <Title text="statistics"/>
       <Statistics good={good} neutral={neutral} bad={bad}/>
-    </div>
+    </>
   )
 }
 
