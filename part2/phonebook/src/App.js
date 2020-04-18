@@ -41,12 +41,53 @@ const Person = ({ person, handleDelete }) => (
   </div>
 )
 
+const Notification = ({ success, message }) => {
+  const notificationStyle = {
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  }
+
+  const green = {
+    color: 'green'
+  }
+
+  const red = {
+    color: 'red'
+  }
+
+  console.log("notification = ", message)
+
+  if (message === "") {
+    return null
+  } else {
+    if (success) {
+      return (
+        <div style={Object.assign(notificationStyle, green)}>
+          <p>{message}</p>
+        </div>
+      )
+    } else {
+      return (
+        <div style={Object.assign(notificationStyle, red)}>
+          <p>{message}</p>
+        </div>
+      )
+    }
+  }
+}
+
 const App = () => {
 
   const [ persons, setPersons] = useState([])
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
+  const [ notification, setNotification ] = useState('')
+  const [ success, setSuccess ] = useState(0)
 
   useEffect(() => {
     console.log('effect')
@@ -72,6 +113,11 @@ const App = () => {
         .then(response => {
           console.log("response to post request", response)
           setPersons(persons.concat(response))
+          setNotification(`Added ${response.name}`)
+          setSuccess(1)
+          setTimeout(() => {
+            setNotification("")
+          }, 5000)
           setNewName("")
           setNewNumber("")
         })
@@ -85,9 +131,21 @@ const App = () => {
         personService
           .replace(newPerson)
           .then(response => {
-            console.log("response =", response)
+            console.log("response to update =", response)
             setPersons(persons.map(person => person.id !== newPerson.id ? person : newPerson))
+            setNotification(`Updated the number of ${response.name}`)
+            setSuccess(1)
+            setTimeout(() => {
+              setNotification("")
+            }, 5000)
           })
+          .catch(error => {
+              console.log("error is", error)
+              setNotification(`Information of ${newPerson.name} has already been removed from server`)
+              setSuccess(0)
+              setPersons(persons.filter(person => person.id !== newPerson.id))
+            }
+          )
       }
     }
   }
@@ -118,6 +176,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification success={success} message={notification}/>
       <Filter onChange={handleFilterChange}/>
       <h2>add a new</h2>
       <PersonForm 
